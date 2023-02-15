@@ -19,14 +19,12 @@ import java.util.Date
     var phoneNumber:Long,
     @Column(name = "relationship")
     var relationship:String,
-    @OneToMany(fetch = FetchType.LAZY)
-    val user:MutableSet<UserEntity>,
 
-){
-    companion object{
-      fun iceContact(emergencyContact:EmergencyContactModel):EmergencyContactEntity{
-         val newContact = EmergencyContactEntity(null,emergencyContact.firstname,emergencyContact.lastname,emergencyContact.phoneNumber,emergencyContact.relationship, mutableSetOf())
-         return newContact
+) {
+   companion object {
+      fun  newContact (emergencyContact: EmergencyContactModel): EmergencyContactEntity {
+         val iceContact = EmergencyContactEntity(null, emergencyContact.firstname, emergencyContact.lastname, emergencyContact.phoneNumber, emergencyContact.relationship)
+         return iceContact
       }
-    }
- }
+   }
+}

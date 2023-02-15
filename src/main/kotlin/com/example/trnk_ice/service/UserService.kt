@@ -14,4 +14,5 @@ interface UserService {
     fun getUserByPhoneNumber(mobile:Long):Optional<UserEntity>
     fun updateUser(user:UpdateUserModel):UserEntity
     fun getAllUsers():List<UserEntity>
+    fun addEmergencyContact(userId:Long,emergencyContactId:Long)
 }

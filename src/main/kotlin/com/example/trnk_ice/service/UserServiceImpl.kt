@@ -11,7 +11,7 @@ import java.util.*
 
 @Service
 @Transactional
-class UserServiceImpl(var userRepo:UserRepository) : UserService {
+class UserServiceImpl(var userRepo:UserRepository,var emergencycontactservice:EmergencyContactService) : UserService {
     override fun register(signUpModel: UserModel): UserEntity {
         val existingUser = getUserByIdNumber(signUpModel.idNumber)
         if (existingUser.isPresent) throw ControllerExceptionHandler.conflicts("this User Already Exists")
@@ -47,15 +47,12 @@ class UserServiceImpl(var userRepo:UserRepository) : UserService {
         updateUser.phoneNumber = user.phoneNumber
         updateUser.bikeColor = user.bikeColor
         updateUser.bikeModel = user.bikeModel
-        updateUser.iceContact = user.iceContact
+        updateUser.iceContact = mutableSetOf( user.iceContact)
         updateUser.numberPlate = user.numberPlate
         updateUser.nhifNumber = user.nhifNumber
         updateUser.insuranceProvider = user.insuranceProvider
         updateUser.policyNumber = user.policyNumber
-        updateUser.iceContact!!.firstname = user.iceContact.firstname
-        updateUser.iceContact!!.lastname = user.iceContact.lastname
-        updateUser.iceContact!!.phoneNumber = user.iceContact.phoneNumber
-        updateUser.iceContact!!.relationship = user.iceContact.relationship
+
 
         updateUser.updatedAt = Date()
         return userRepo.save(updateUser)
@@ -63,5 +60,21 @@ class UserServiceImpl(var userRepo:UserRepository) : UserService {
 
     override fun getAllUsers(): List<UserEntity> {
         return userRepo.findAll()
+    }
+
+    override fun addEmergencyContact(userId: Long, emergencyContactId: Long) {
+        val optionalUser = userRepo.findById(userId)
+        if (optionalUser.isEmpty) throw ControllerExceptionHandler.notFound("User Not Found")
+        val optionalEmergencyContact = emergencycontactservice.getById(emergencyContactId)
+        if (optionalEmergencyContact.isEmpty) throw ControllerExceptionHandler.notFound("This user has No Emergency Contact")
+
+        val user = optionalUser.get()
+        val contact = optionalEmergencyContact.get()
+
+        if (user.iceContact!!.contains(contact)) throw ControllerExceptionHandler.conflicts("this contact already exits")
+
+        user.iceContact!!.add(contact)
+
+
     }
 }

@@ -70,4 +70,9 @@ class TRNKUserController {
     fun getAllUsers():List<UserDto> = userService.getAllUsers().stream().map {
         UserDto.fromUserEntity(it)
     }.toList()
+    @PostMapping
+    fun addEmergencyContact(@RequestParam("user_id")userId:Long,@RequestParam("emergencyContact_Id")emergencyContactId:Long):ResponseEntity<Any>{
+         userService.addEmergencyContact(userId,emergencyContactId)
+        return ResponseEntity(ApiResponse(HttpStatus.OK.value(),"Contact added Successfully",null),HttpStatus.OK)
+    }
 }

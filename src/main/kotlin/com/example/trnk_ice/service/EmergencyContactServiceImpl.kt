@@ -12,13 +12,13 @@ import java.util.*
 @Transactional
 class EmergencyContactServiceImpl(private var emergencyContactRepo:EmergencyContactRepository) : EmergencyContactService {
     override fun addEmergencyContact(emergencyContact: EmergencyContactModel): EmergencyContactEntity {
-        val existingContact = getById(emergencyContact.phoneNumber)
+
+        val existingContact = getEmergencyContactByPhoneNumber(emergencyContact.phoneNumber)
         if (existingContact.isPresent) throw ControllerExceptionHandler.conflicts("This Contact Already Exists")
-        val newContact = EmergencyContactEntity.iceContact(emergencyContact)
+        val newContact = EmergencyContactEntity.newContact(emergencyContact)
 
         return emergencyContactRepo.save(newContact)
     }
-
     override fun getById(id: Long): Optional<EmergencyContactEntity> {
         return emergencyContactRepo.findById(id)
     }

@@ -41,17 +41,17 @@ data class UserEntity (
     var policyNumber: String,
     @Column(name = "blood_group")
     var bloodGroup:String,
-    @ManyToOne(cascade = [CascadeType.ALL])
-    var iceContact:EmergencyContactEntity?,
+    @ManyToMany(fetch = FetchType.LAZY,cascade = [CascadeType.ALL])
+    @JoinColumn(name = "emergency_contact_id")
+    var iceContact:MutableSet<EmergencyContactEntity>?,
     @Column(name = "updated_at")
     var updatedAt:Date
-
 
 ){
     companion object{
         fun createNewUser(userModel: UserModel):UserEntity{
             val now = Date()
-            val newUser = UserEntity(null, createdAt = now,userModel.email,userModel.username,userModel.idNumber,userModel.firstname,userModel.lastname,userModel.phoneNumber,userModel.bikeModel,userModel.bikeColor,userModel.numberPlate,userModel.nhifNumber,userModel.policyNumber,userModel.insuranceProvider,userModel.policyNumber,userModel.bloodGroup,iceContact = null, updatedAt = now)
+            val newUser = UserEntity(null, createdAt = now,userModel.email,userModel.username,userModel.idNumber,userModel.firstname,userModel.lastname,userModel.phoneNumber,userModel.bikeModel,userModel.bikeColor,userModel.numberPlate,userModel.motorcycleKenyaNumber,userModel.nhifNumber,userModel.policyNumber,userModel.insuranceProvider,userModel.bloodGroup,iceContact = null,updatedAt = now)
             return newUser
         }
     }
